@@ -275,50 +275,13 @@ int main (int argc, char* argv[])
           endpoint_mutated_in = "NN";
         }
       }
-      
-      //if (ref_a == A_s)
-      //{
-      //  int mutated_reads_a = std::max(std::stoi(T_count_a)+std::stoi(t_count_a),
-      //                                 std::stoi(C_count_a)+std::stoi(c_count_a)); 
-      //  mutated_reads_a = std::max(mutated_reads_a, std::stoi(G_count_a)+std::stoi(g_count_a));
-      //  ancestor_mut_freq = static_cast<double>(mutated_reads_a)/static_cast<double>(ancestor_coverage);
-      //} 
-
-      //if (ref_a == G_s)
-      //{
-      //  int mutated_reads_a = std::max(std::stoi(T_count_a)+std::stoi(t_count_a),
-      //                                 std::stoi(C_count_a)+std::stoi(c_count_a)); 
-      //  mutated_reads_a = std::max(mutated_reads_a, std::stoi(A_count_a)+std::stoi(a_count_a));
-      //  ancestor_mut_freq = static_cast<double>(mutated_reads_a)/static_cast<double>(ancestor_coverage);
-      //} 
-
-      //if (ref_a == C_s)
-      //{
-      //  int mutated_reads_a = std::max(std::stoi(T_count_a)+std::stoi(t_count_a),
-      //                                 std::stoi(A_count_a)+std::stoi(a_count_a)); 
-      //  mutated_reads_a = std::max(mutated_reads_a, std::stoi(G_count_a)+std::stoi(g_count_a));
-      //  ancestor_mut_freq = static_cast<double>(mutated_reads_a)/static_cast<double>(ancestor_coverage);
-      //} 
-
-      //if (ref_a == T_s)
-      //{
-      //  int mutated_reads_a = std::max(std::stoi(A_count_a)+std::stoi(a_count_a),
-      //                                 std::stoi(C_count_a)+std::stoi(c_count_a)); 
-      //  mutated_reads_a = std::max(mutated_reads_a, std::stoi(G_count_a)+std::stoi(g_count_a));
-      //  ancestor_mut_freq = static_cast<double>(mutated_reads_a)/static_cast<double>(ancestor_coverage);
-      //} 
-  
+       
       if ((ancestor_coverage >= min_cov_a) && (ancestor_coverage <= max_cov_a) && (same_reeds_ancestor.first == true))
-      //cut the left part of the tail in the ancestor if the coverage is too low
-      //if ((ancestor_coverage >= coverage_thr_ancestor) && (ancestor_coverage <= max_cov_a) && (same_reeds_ancestor.first == true))
       { 
         selected_bases_p += 1;
 
         if ((endpoint_mut_freq > 0.0) && (endpoint_coverage >= min_cov_e) && (endpoint_coverage <= max_cov_e))
         { 
-          //double p_value_ancestor = binomial_p_value(ancestor_coverage, Nm_ancestor); 
-          //double p_value_endpoint = binomial_p_value(endpoint_coverage, Nm_endpoint);
-          //if (balanced_tot(A_count_e, G_count_e, C_count_e, T_count_e, a_count_e, g_count_e, c_count_e, t_count_e))
 
           if (balanced(endpoint_mutated_in, A_s, G_s, C_s, T_s, A_count_e, a_count_e, G_count_e, g_count_e, C_count_e, c_count_e, T_count_e, t_count_e))
           {
