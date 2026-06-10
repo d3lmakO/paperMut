@@ -139,15 +139,15 @@ int main (int argc, char* argv[])
   }
 
   //fix_min_cov = std::stoi(argv[10]); 
-  //int min_thr = fix_min_cov * static_cast<int>(ploidy_end);
+  //int min_thr = fix_min_cov * static_cast<int>(CN_end);
   //double L1 = std::stod(argv[9]);
   //double alpha1 = 0.05/L1;
 
-  size_t n_mut_ploidy_nb = 0;
+  size_t n_mut_CN_nb = 0;
   size_t selected_bases_p = 0;
-  size_t n_bases_ploidy_mut = 0;
+  size_t n_bases_CN_mut = 0;
 
-  double ploidy_end = std::stod(argv[8]);
+  double CN_end = std::stod(argv[8]);
   coverage_thr_ancestor = rounded(std::stod(argv[4]));
   std_dev_cov_ancestor1 = rounded(std::stod(argv[5]));
   std_dev_cov_ancestor2 = rounded(std::stod(argv[5]));
@@ -161,7 +161,7 @@ int main (int argc, char* argv[])
   max_cov_e = coverage_thr_endpoint + std_dev_cov_endpoint2;
   ///////////////////////////////////////////////////////////////////////
 
-  std::cout << "PLOIDY = " << ploidy_end << std::endl;
+  std::cout << "CN = " << CN_end << std::endl;
   std::cout << "Modal coverage ancestor = " << coverage_thr_ancestor << std::endl;
   std::cout << "Min coverage ancestor = " << min_cov_a << std::endl;
   std::cout << "Max coverage ancestor = " << max_cov_a << std::endl;
@@ -309,6 +309,8 @@ int main (int argc, char* argv[])
       //} 
   
       if ((ancestor_coverage >= min_cov_a) && (ancestor_coverage <= max_cov_a) && (same_reeds_ancestor.first == true))
+      //cut the left part of the tail in the ancestor if the coverage is too low
+      //if ((ancestor_coverage >= coverage_thr_ancestor) && (ancestor_coverage <= max_cov_a) && (same_reeds_ancestor.first == true))
       { 
         selected_bases_p += 1;
 
@@ -320,16 +322,16 @@ int main (int argc, char* argv[])
 
           if (balanced(endpoint_mutated_in, A_s, G_s, C_s, T_s, A_count_e, a_count_e, G_count_e, g_count_e, C_count_e, c_count_e, T_count_e, t_count_e))
           {
-            n_bases_ploidy_mut += 1; 
+            n_bases_CN_mut += 1; 
 
             std::string t_chr_e;
             for( char c : chr_e ) if (std::isalnum(c)) t_chr_e += c;
 
-            file_reeds_p << t_chr_e << "\t" << base_num_e << "\t" << same_reeds_ancestor.second << "\t" << endpoint_mutated_in << "\t" << endpoint_coverage << "\t" << mutated_reads << "\t" << ploidy_end << std::endl;
+            file_reeds_p << t_chr_e << "\t" << base_num_e << "\t" << ref_e << "\t" << same_reeds_ancestor.second << "\t" << endpoint_mutated_in << "\t" << endpoint_coverage << "\t" << mutated_reads << "\t" << CN_end << std::endl;
           }
           else
           {
-            n_mut_ploidy_nb += 1;
+            n_mut_CN_nb += 1;
           }
         }
       }
@@ -344,14 +346,14 @@ int main (int argc, char* argv[])
   in_file_endpoint.close();
   in_file_ancestor.close();
 
-  size_t no_mutations_p = selected_bases_p - n_bases_ploidy_mut;
+  size_t no_mutations_p = selected_bases_p - n_bases_CN_mut;
 
   std::cout << "Selected bases: " << selected_bases_p << std::endl;
   std::cout << "Not mutated number of bases: " << no_mutations_p << std::endl;
-  std::cout << "Number of mutated bases not balanced: " << n_mut_ploidy_nb << std::endl;
+  std::cout << "Number of mutated bases not balanced: " << n_mut_CN_nb << std::endl;
 
   file_sel_p << no_mutations_p << std::endl;
-  file_nb << n_mut_ploidy_nb << std::endl;
+  file_nb << n_mut_CN_nb << std::endl;
 
   file_reeds_p.close();
   file_sel_p.close();

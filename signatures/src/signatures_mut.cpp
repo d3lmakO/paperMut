@@ -56,7 +56,7 @@ int main (int argc, char* argv[])
   std::string mut_m;
   std::string cov_endpoint_m;
   std::string mut_read_m;
-  std::string ploidy_m;
+  std::string CN_m;
 
   //endpoint
   std::string endpoint_line;
@@ -118,7 +118,7 @@ int main (int argc, char* argv[])
     //mutations
     lines_mut += 1;
     std::stringstream data_mutation(mutation_line);
-    data_mutation >> chr_m >> base_num_m >> anc_m >> mut_m >> cov_endpoint_m >> mut_read_m >> ploidy_m; 
+    data_mutation >> chr_m >> base_num_m >> anc_m >> mut_m >> cov_endpoint_m >> mut_read_m >> CN_m; 
 
     std::string prev_e;
     std::string curr_e;

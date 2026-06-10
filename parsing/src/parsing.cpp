@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
 
   if (argc != 3)
   {
-    std::cout << "Use: " << argv[0] << " [CRCXXXX-XX-X-X.callable_ploidy-X_pseudompileup.gz]  [CRCXXXX-XX-X.[ancestor|endpoint]_ploidy-X_pseudopileup.dat]" << std::endl; 
+    std::cout << "Use: " << argv[0] << " [CRCXXXX-XX-X-X.callable_CN-X_pseudompileup.gz]  [CRCXXXX-XX-X.[ancestor|endpoint]_CN-X_pseudopileup.dat]" << std::endl; 
     return 1;
   }
   

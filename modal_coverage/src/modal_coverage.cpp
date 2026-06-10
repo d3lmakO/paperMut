@@ -22,7 +22,7 @@ int main (int argc, char* argv[])
 
   if (argc < 3)
   {
-    std::cout << "Use: " << argv[0] << " <path_pseudo-pileup.dat> <path_output_file.dat> [path_output] [strain name] [ploidy] [ancestor|endpoint] [Options]" << std::endl;
+    std::cout << "Use: " << argv[0] << " <path_pseudo-pileup.dat> <path_output_file.dat> [path_output] [strain name] [CN] [ancestor|endpoint] [Options]" << std::endl;
     std::cout << "Optional options: " << std::endl;
     std::cout << "  --hist               print coverage histogram in a txt file               " << std::endl;
     return 1;

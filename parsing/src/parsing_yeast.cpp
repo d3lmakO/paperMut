@@ -5,22 +5,14 @@
 #include <algorithm>
 #include <iomanip>
 #include <chrono>
-#include <boost/iostreams/filtering_streambuf.hpp>
-#include <boost/iostreams/filter/gzip.hpp>
 
 std::string get_right_of_delim(std::string const& str, std::string const& delim)
 {
   return str.substr(str.find(delim) + delim.size());
 }
 
-
-namespace bi = boost::iostreams;
-
 int main(int argc, char* argv[])
 {
-  //split string for: chr number, loci num base 1, ref base, coverage, reads, single base quality. 
-  //constexpr size_t num_split = 6;
-  //constexpr size_t sub_ascii = 33.0;
   const std::vector<std::string> chr_perm = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI"};
 
   if (argc != 3)

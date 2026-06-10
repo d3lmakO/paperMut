@@ -7,6 +7,7 @@
 #include <vector>
 #include <deque>
 #include <tuple>
+#include <unordered_set>
 #include <random>
 #include <cmath>
 #include <limits>
@@ -43,7 +44,9 @@ class Tree
 {
 public:
   Random rnd;
+  size_t lambda_clonal = 0;
   std::vector<double> freq_mutations;
+  std::vector<std::vector<T>> macro_levels;
 
   Tree(const std::vector<Node<T>> &tree, 
        double death_probability,
@@ -135,9 +138,9 @@ public:
     }
   }
 
-  void set_engine(std::mt19937 &engine)
+  void r_number(std::mt19937 &engine)
   {
-    engine = engine; 
+    std::cout << "Random number = " << engine() << std::endl;
   }
 
   void set_variables()
@@ -146,6 +149,7 @@ public:
     count_mutations = 0;
     all_alive = 0;
     freq_mutations.resize(0);
+    macro_levels.resize(0);
   }
 
   void start_tree(long double mut, size_t n_e, size_t gen_i)
@@ -200,6 +204,7 @@ public:
     tree.resize(0);
     generations.resize(0); 
     freq_mutations.resize(0);
+    macro_levels.resize(0);
   }
 
   void root_node()
@@ -429,6 +434,40 @@ public:
     }
   }
 
+  std::vector<T> list_alive_progeny(T cell_id)
+  {
+    std::vector<T> alives; 
+    if (cell_id >= ((generations.back()).front()).data)
+    {
+      alives.push_back(cell_id);
+      std::cout << "Alive progeny = " << "\t";
+      for (const auto& data : alives)
+      {
+        std::cout << data << "\t"; 
+      }
+      std::cout << "\n";
+      return alives;
+    }
+    else
+    {
+      std::vector<T> descendants = descendant_ids(cell_id);
+      for (const auto& data : descendants)
+      {
+        if (data >= ((generations.back()).front()).data)
+        {
+          alives.push_back(data);
+        }
+      }
+      std::cout << "Alive progeny = " << "\t";
+      for (const auto& data : alives)
+      {
+        std::cout << data << "\t"; 
+      }
+      std::cout << "\n";
+      return alives;
+    }
+  }
+
   void count_all_alive()
   { 
 
@@ -465,10 +504,199 @@ public:
     //std::cout << "All alive cells: " << all_alive << std::endl; 
   }
 
+  //split tree in macro leves
+  void create_macro_levels(int n_levels)
+  {
+    //std::vector<std::vector<T>> macro_levels;
+    int size_gens = generations.size(); 
+    int vec_per_level = 0;
+    int temp_len = 0;
+    int mod = 0;
+    std::vector<int> sub_levels;
+
+    if ((size_gens % n_levels) == 0)
+    {
+      vec_per_level = size_gens/n_levels;
+
+      for (int i = 0; i < size_gens; i += vec_per_level)
+      {
+        sub_levels.push_back(vec_per_level);
+        std::vector<T> level;
+        for (int j = i; j < (i+vec_per_level); ++j)
+        {
+          for (size_t k = 0; k < generations[j].size(); ++k)
+          {
+            level.push_back(generations[j][k].data); 
+          }
+        }
+        macro_levels.push_back(level);
+      }
+    }
+    else
+    {
+      mod = size_gens % n_levels;
+      temp_len = size_gens - mod;
+      vec_per_level = (temp_len)/n_levels;
+
+      for (int i = 0; i < temp_len; i += vec_per_level)
+      {
+        sub_levels.push_back(vec_per_level);
+        std::vector<T> level;
+        for (int j = i; j < (i+vec_per_level); ++j)
+        {
+          for (size_t k = 0; k < generations[j].size(); ++k)
+          {
+            level.push_back(generations[j][k].data); 
+          }
+        }
+        macro_levels.push_back(level);   
+      }
+
+      
+      sub_levels.push_back(mod);
+      std::vector<T> level;
+      for (int l = temp_len; l < size_gens; ++l)
+      {
+        for (size_t k = 0; k < generations[l].size(); ++k)
+        {
+          level.push_back(generations[l][k].data);
+        }
+      }
+      macro_levels.push_back(level); 
+    }
+
+    std::vector<int> count_nodes;
+
+    int cn_levels = 0;
+
+    for (auto &lev : macro_levels)
+    {
+      cn_levels += 1;
+      int elem = static_cast<int>(lev.size());
+      count_nodes.push_back(elem);
+    }
+  
+    std::cout << "Number of generations = " << size_gens << std::endl; 
+    std::cout << "Number of levels = " << cn_levels << std::endl;
+    std::cout << "Number of sublevels in each macro level = [ ";
+    for (auto &el : sub_levels)
+    {
+      std::cout << el << " ";
+    }
+    std::cout << "]" << std::endl;
+    std::cout << "Number of nodes in each sublevel = [ ";
+    for (auto &el : count_nodes)
+    {
+      std::cout << el << " ";
+    }
+    std::cout << "]" << std::endl;
+  }
+
+  //select macro level for random cell selection
+  std::vector<T> macro_layer_selection(int layer_id)
+  {
+    std::vector<T> selected_macro_layer = macro_levels[layer_id]; 
+    return selected_macro_layer; 
+  }
+
+  size_t random_cell_from_vector(std::mt19937 &engine, const std::vector<T> &layer_selected)
+  {
+    std::uniform_int_distribution<size_t> dist(0, layer_selected.size() - 1);
+    size_t random_index = dist(engine);
+    return layer_selected[random_index];
+  }
+
+  void set_mutations_diff_mr(std::mt19937 &engine, long double higher_mr, int layer_id)
+  {
+    std::vector<T> layer_selected = macro_layer_selection(layer_id); 
+    size_t cell_id_diff_mr = random_cell_from_vector(engine, layer_selected);
+    size_t alives_prog = count_alive_progeny(cell_id_diff_mr);
+    while (alives_prog == 0)
+    {
+      cell_id_diff_mr = random_cell_from_vector(engine, layer_selected);
+      alives_prog = count_alive_progeny(cell_id_diff_mr);
+    }
+    std::cout << "Alive cells hyper mutated cell = " << alives_prog << std::endl;
+
+    std::vector<T> descendants = descendant_ids(cell_id_diff_mr);
+    size_t n_cells_diff_mr = descendants.size();
+    size_t mutations_diff_mr = generate_mutations_diff_mr(engine, n_cells_diff_mr, higher_mr); 
+    std::cout << "Number of mutations with higher mutation rate = " << mutations_diff_mr << std::endl;
+    std::cout << "Number of daughters of hyper mutated cell = " << n_cells_diff_mr << std::endl;
+
+    size_t other_tree_cells = max_node_index - n_cells_diff_mr;
+    n_mutations = generate_mutations_diff_cells(engine, other_tree_cells); 
+    std::cout << "Number of mutations with standard mutation rate = " << n_mutations << std::endl;
+
+    for (size_t i = 0; i < mutations_diff_mr; ++i)
+    {       
+      size_t cell_id = random_cell_from_vector(engine, descendants);
+      size_t alive_mutated_progeny = count_alive_progeny(cell_id);
+
+      if (alive_mutated_progeny != 0)
+      {
+        double frequency = static_cast<double>(alive_mutated_progeny) / static_cast<double>(survived_nodes);
+        freq_mutations.push_back(frequency);
+        //std::cout << "Frequency higher mut rate = " << frequency << std::endl;
+      }
+    }
+
+    //now we generate mutations with the standard mr
+    std::vector<T> total_nodes; 
+    for (auto &layer : generations)
+    {
+      for (auto &nod : layer)
+      {
+        total_nodes.push_back(nod.data);
+      }
+    }
+
+    std::unordered_set<T> v2us(descendants.cbegin(),descendants.cend());
+    std::vector<T> results_other_nodes;
+    for (auto &it : total_nodes)
+    {
+      if (v2us.count(it) == 0)
+      {
+        results_other_nodes.push_back(it);
+      }
+    }
+
+    size_t n_cells_standard_mr = results_other_nodes.size();
+    std::cout << "Number of daughters of standard cells = " << n_cells_standard_mr << std::endl;
+
+
+    for (size_t i = 0; i < n_mutations; ++i)
+    {
+      size_t cell_id_n = random_cell_from_vector(engine, results_other_nodes);
+      size_t alive_mutated_progeny_n = count_alive_progeny(cell_id_n);
+      if (alive_mutated_progeny_n != 0)
+      {
+        double frequency = static_cast<double>(alive_mutated_progeny_n) / static_cast<double>(survived_nodes);
+        freq_mutations.push_back(frequency);
+      }
+    }
+  }
+
   size_t generate_mutations(std::mt19937 &engine)
   {
     size_t attempts = max_node_index * n_bases; 
     std::binomial_distribution<long long unsigned> bd(attempts, mutation_rate);
+    size_t mutations = bd(engine);
+    return mutations;
+  }
+
+  size_t generate_mutations_diff_cells(std::mt19937 &engine, size_t n_cells)
+  {
+    size_t attempts = n_cells * n_bases; 
+    std::binomial_distribution<long long unsigned> bd(attempts, mutation_rate);
+    size_t mutations = bd(engine);
+    return mutations;
+  }
+
+  size_t generate_mutations_diff_mr(std::mt19937 &engine, size_t n_cells, long double mr)
+  {
+    size_t attempts = n_cells * n_bases; 
+    std::binomial_distribution<long long unsigned> bd(attempts, mr);
     size_t mutations = bd(engine);
     return mutations;
   }
@@ -484,6 +712,76 @@ public:
       app += 1.0;
     }
     return (static_cast<size_t>(app) % max_node_index);
+  }
+
+  void set_mutations_diff_mr_random(std::mt19937 &engine, long double higher_mr)
+  {
+    size_t cell_id_diff_mr = random_mutant_cell();
+    size_t alives_prog = count_alive_progeny(cell_id_diff_mr);
+    while (alives_prog == 0)
+    {
+      cell_id_diff_mr = random_mutant_cell();
+      alives_prog = count_alive_progeny(cell_id_diff_mr);
+    }
+    std::cout << "Alive cells hyper mutated cell = " << alives_prog << std::endl;
+
+    std::vector<T> descendants = descendant_ids(cell_id_diff_mr);
+    size_t n_cells_diff_mr = descendants.size();
+    size_t mutations_diff_mr = generate_mutations_diff_mr(engine, n_cells_diff_mr, higher_mr); 
+    std::cout << "Number of mutations with higher mutation rate = " << mutations_diff_mr << std::endl;
+    std::cout << "Number of daughters of hyper mutated cell = " << n_cells_diff_mr << std::endl;
+
+    size_t other_tree_cells = max_node_index - n_cells_diff_mr;
+    n_mutations = generate_mutations_diff_cells(engine, other_tree_cells); 
+    std::cout << "Number of mutations with standard mutation rate = " << n_mutations << std::endl;
+
+    for (size_t i = 0; i < mutations_diff_mr; ++i)
+    {       
+      size_t cell_id = random_cell_from_vector(engine, descendants);
+      size_t alive_mutated_progeny = count_alive_progeny(cell_id);
+
+      if (alive_mutated_progeny != 0)
+      {
+        double frequency = static_cast<double>(alive_mutated_progeny) / static_cast<double>(survived_nodes);
+        freq_mutations.push_back(frequency);
+        //std::cout << "Frequency higher mut rate = " << frequency << std::endl;
+      }
+    }
+
+    //now we generate mutations with the standard mr
+    std::vector<T> total_nodes; 
+    for (auto &layer : generations)
+    {
+      for (auto &nod : layer)
+      {
+        total_nodes.push_back(nod.data);
+      }
+    }
+
+    std::unordered_set<T> v2us(descendants.cbegin(),descendants.cend());
+    std::vector<T> results_other_nodes;
+    for (auto &it : total_nodes)
+    {
+      if (v2us.count(it) == 0)
+      {
+        results_other_nodes.push_back(it);
+      }
+    }
+
+    size_t n_cells_standard_mr = results_other_nodes.size();
+    std::cout << "Number of daughters of standard cells = " << n_cells_standard_mr << std::endl;
+
+
+    for (size_t i = 0; i < n_mutations; ++i)
+    {
+      size_t cell_id_n = random_cell_from_vector(engine, results_other_nodes);
+      size_t alive_mutated_progeny_n = count_alive_progeny(cell_id_n);
+      if (alive_mutated_progeny_n != 0)
+      {
+        double frequency = static_cast<double>(alive_mutated_progeny_n) / static_cast<double>(survived_nodes);
+        freq_mutations.push_back(frequency);
+      }
+    }
   }
 
   void set_mutations_with_count(std::mt19937 &engine)
@@ -524,10 +822,30 @@ public:
       {
         double frequency = static_cast<double>(alive_mutated_progeny) / static_cast<double>(survived_nodes);
         freq_mutations.push_back(frequency);
-        //count_mutations += 1;
-        //std::cout << "True frequency = " << frequency << std::endl;
       }
     }
+
+    //clonal frequency only if we set up clonal mutations != 0
+    if (lambda_clonal != 0)
+    {
+      size_t n_clonal_mut = set_n_clonal(lambda_clonal, engine);
+      for (size_t i = 0; i < n_clonal_mut; ++i)
+      { 
+        size_t root_id = 0;
+        size_t alive_mutated_progeny = count_alive_progeny(root_id);
+        double frequency = static_cast<double>(alive_mutated_progeny) / static_cast<double>(survived_nodes);
+        std::cout << "Clonal frequency = " << frequency << std::endl;
+        freq_mutations.push_back(frequency);
+      }
+    }
+  }
+
+  size_t set_n_clonal(size_t lambda, std::mt19937 &engine)
+  {
+    //std poisson distribution
+    std::poisson_distribution<unsigned long long> p(lambda);
+    size_t nc = p(engine);
+    return nc;
   }
 
   void set_n_mut_prior(std::mt19937 &engine)
