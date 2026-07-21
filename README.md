@@ -80,4 +80,12 @@ All programs have their own executable in the ``exec`` subfolder.
 - boost::iostreams
 - gnu gsl library (only for the simulation)
 - bwa 0.7.17-r1188 (only for the yeasts)
-- samtools 1.20 (only for the yeasts) 
+- samtools 1.20 (only for the yeasts)
+
+## Citation [![DOI](https://zenodo.org/badge/884310883.svg)](https://doi.org/10.5281/zenodo.21480295)
+
+**Paper:**
+> Pompei, S., Geroldi, A., Rivetti, P., Grassi, E., Vurchio, V., Tallarico, G., Corti, G., Tattini, L., Liti, G., Bertotti, A., & Cosentino Lagomarsino, M. $\mu$Seq: Universal mutation rate quantification via deep sequencing of a single clonal expansion.
+
+**Code Archive:**
+> Geroldi, A. Code archive for "$\mu$Seq: Universal mutation rate quantification via deep sequencing of a single clonal expansion" (paperMut Version v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.21480295
