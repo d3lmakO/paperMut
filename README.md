@@ -88,4 +88,4 @@ All programs have their own executable in the ``exec`` subfolder.
 > Pompei, S., Geroldi, A., Rivetti, P., Grassi, E., Vurchio, V., Tallarico, G., Corti, G., Tattini, L., Liti, G., Bertotti, A., Cosentino Lagomarsino, M. μSeq: Universal mutation rate quantification via deep sequencing of a single clonal expansion.
 
 **Code Archive:**
-> Geroldi, A. Code archive for "μSeq: Universal mutation rate quantification via deep sequencing of a single clonal expansion" (paperMut Version v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.21480295
+> Pompei, S., Geroldi, A., Cosentino Lagomarsino, M. Code archive for "μSeq: Universal mutation rate quantification via deep sequencing of a single clonal expansion" (paperMut Version v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.21480296 (Concept DOI: https://doi.org/10.5281/zenodo.21480295)
