@@ -1,5 +1,5 @@
 # paperMut
-C++ and bash scripts for the paper: Accurate quantification of mutation rates in patient-derived colorectal cancer organoids via sequencing-based fluctuation assays.
+C++ and bash scripts for the paper: *μSeq: Universal mutation rate quantification via deep sequencing of a single clonal expansion* (*Nature Communications*, 2026).
 
 
 ## Description
@@ -84,8 +84,12 @@ All programs have their own executable in the ``exec`` subfolder.
 
 ## Citation
 
-**Paper:**
-> Pompei, S., Geroldi, A., Rivetti, P., Grassi, E., Vurchio, V., Tallarico, G., Corti, G., Tattini, L., Liti, G., Bertotti, A., Cosentino Lagomarsino, M. μSeq: Universal mutation rate quantification via deep sequencing of a single clonal expansion.
+If you use `paperMut` in your research, please cite the published paper and the archived code/data:
 
-**Code Archive:**
-> Geroldi, A. Code archive for "μSeq: Universal mutation rate quantification via deep sequencing of a single clonal expansion" (paperMut Version v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.21480295
+**Paper:**
+> > Pompei, S., Geroldi, A., Rivetti, P., Grassi, E., Vurchio, V., Tallarico, G., Corti, G., Tattini, L., Liti, G., Bertotti, A., & Cosentino Lagomarsino, M. (2026). μSeq: Universal mutation rate quantification via deep sequencing of a single clonal expansion. *Nature Communications*. https://doi.org/10.1038/s41467-026-78961-4
+
+**Code & Data Archives:**
+> Geroldi, A. (2026). Code archive for "μSeq: Universal mutation rate quantification via deep sequencing of a single clonal expansion" (`paperMut` v1.0.0). *Zenodo*. https://doi.org/10.5281/zenodo.21480296
+>
+> Accompanying dataset on *Mendeley Data*: https://doi.org/10.17632/f2ncsxtwhh.1
