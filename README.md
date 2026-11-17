@@ -89,7 +89,7 @@ If you use `paperMut` in your research, please cite the published paper and the 
 **Paper:**
 > > Pompei, S., Geroldi, A., Rivetti, P., Grassi, E., Vurchio, V., Tallarico, G., Corti, G., Tattini, L., Liti, G., Bertotti, A., & Cosentino Lagomarsino, M. (2026). μSeq: Universal mutation rate quantification via deep sequencing of a single clonal expansion. *Nature Communications*. https://doi.org/10.1038/s41467-026-78961-4
 
-**Code & Data Archives:**
+**Code and Data Archives:**
 > Geroldi, A. (2026). Code archive for "μSeq: Universal mutation rate quantification via deep sequencing of a single clonal expansion" (`paperMut` v1.0.0). *Zenodo*. https://doi.org/10.5281/zenodo.21480296
 >
 > Accompanying dataset on *Mendeley Data*: https://doi.org/10.17632/f2ncsxtwhh.1
